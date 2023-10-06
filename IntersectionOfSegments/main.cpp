@@ -13,7 +13,7 @@ int main()
 	avl.Insert(10);
 	avl.Insert(6);
 	avl.Print();
-	cout << "\n";
-	avl.Print();
+	std::cout << "\n";
+	std::cout << avl.UnderNode(avl.Minimum())->key;
 	return 0;
 }

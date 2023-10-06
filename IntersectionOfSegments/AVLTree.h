@@ -1,18 +1,17 @@
 #pragma once
 #ifndef INTERSECTION_OF_SEGMENTS_AVL_TREE_H_
 #define INTERSECTION_OF_SEGMENTS_AVL_TREE_H_
-#include <stack>
 #include <algorithm>
 #include <iostream>
-
-using namespace std;
 
 struct Node
 {
 	int key;
 	Node* left, * right;
+	Node* parent;
 	int height;
-	Node(int _key, Node* _left = nullptr, Node* _right = nullptr, int _height = 1) : key(_key), left(_left), right(_right), height(_height) {};
+	Node(int _key, Node* _parent = nullptr, Node* _left = nullptr, Node* _right = nullptr, int _height = 1) :
+		key(_key), left(_left), right(_right), parent(_parent), height(_height) {};
 };
 
 class AVLTree
@@ -26,20 +25,34 @@ class AVLTree
 		current->height = (height_right > height_left ? height_right : height_left) + 1;
 	}
 	void PartInsertRecursive(Node* current, int key);
+	Node* Min(Node* node)
+	{
+		while (node->left != nullptr)
+		{
+			node = node->left;
+		}
+		return node;
+	}
+	Node* Max(Node* node)
+	{
+		while (node->right != nullptr)
+		{
+			node = node->right;
+		}
+		return node;
+	}
 	Node* root_;
 public:
-	AVLTree() : root_(nullptr) {};
-	Node* RotationRight(Node* current);
-	Node* RotationLeft(Node* current);
+	AVLTree(Node* root = nullptr) : root_(root) {};
+
+	Node* RotationRight(Node* current, Node* parent);
+	Node* RotationLeft(Node* current, Node* parent);
 	Node* BalanceNode(Node* current);
+
+	Node* Maximum() { return Max(root_); }
+	Node* Minimum() { return Min(root_); }
+
 	void Insert(const int key);
-	void OrderedPrint(Node* root) {
-		if (root != nullptr) {
-			OrderedPrint(root->left);
-			cout << root->key << " ";
-			OrderedPrint(root->right);
-		}
-	}
 	void deleteTree(Node* root)
 	{
 		if (root != nullptr) {
@@ -48,14 +61,18 @@ public:
 			delete root;
 		}
 	}
-	void Print()
-	{
-		OrderedPrint(root_);
-	}
-	~AVLTree()
-	{
-		deleteTree(root_);
-	}
-};
 
+	Node* UnderNode(Node* node);
+	Node* OverNode(Node* node);
+
+	void OrderedPrint(Node* root) {
+		if (root != nullptr) {
+			OrderedPrint(root->left);
+			std::cout << root->key << " ";
+			OrderedPrint(root->right);
+		}
+	}
+	void Print() { OrderedPrint(root_); }
+	~AVLTree() { deleteTree(root_); }
+};
 #endif
