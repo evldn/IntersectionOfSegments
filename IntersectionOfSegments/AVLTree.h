@@ -31,7 +31,7 @@ class AVLTree
 		unsigned char height_right = Height(current->right);
 		current->height = (height_right > height_left ? height_right : height_left) + 1;
 	}
-	void PartInsertRecursive(Node<T>* current, T key)
+	void PartInsertRecursive(Node<T>* current, T& key)
 	{
 		if (key < current->key) {
 			if (current->left)
@@ -86,6 +86,18 @@ class AVLTree
 			node = node->right;
 		}
 		return node;
+	}
+	Node<T>* Find(T& key) {
+		Node<T>* current = root_;
+		while (current != nullptr) {
+			if (key == current->key)
+				return current;
+			else if (key < current->key)
+				current = current->left;
+			else if (key > current->key)
+				current = current->right;
+		}
+		return nullptr;
 	}
 	Node<T>* root_;
 public:
@@ -185,7 +197,7 @@ public:
 	Node<T>* Maximum() { return Max(root_); }
 	Node<T>* Minimum() { return Min(root_); }
 
-	void Insert(const T key)
+	void Insert(T& key)
 	{
 		if (root_ == nullptr) {
 			root_ = new Node<T>(key);
@@ -204,12 +216,40 @@ public:
 		root_ = BalanceNode(root_);
 	}
 
-	void RemoveMin(Node<T>* node) // удаление узла с минимальным ключом из дерева p
+	void RemoveMin(Node<T>* node)
 	{
 		if (node->left == 0)
-			return node->right;
-		node->left = RemoveMin(node->left);
+			return;
+		RemoveMin(node->left);
 		BalanceNode(node);
+	}
+
+	void RemoveNode(Node<T>* node, Node<T>* keyNode)
+	{
+		if (!node) return;
+		if (keyNode->key < node->key)
+			RemoveNode(node->left, keyNode);
+		else if (keyNode->key > node->key)
+			RemoveNode(node->right, keyNode);
+		else
+		{
+			Node<T>* left = node->left;
+			Node<T>* right = node->right;
+			delete node;
+			if (!right) return;
+			Node<T>* min = Min(right);
+			RemoveMin(right);
+			min->left = left;
+			BalanceNode(min);
+			return;
+		}
+		BalanceNode(node);
+	}
+
+	void Remove(T& key)
+	{
+		Node<T>* node = Find(key);
+		RemoveNode(root_, node);
 	}
 
 	void deleteTree(Node<T>* root)
@@ -221,11 +261,12 @@ public:
 		}
 	}
 
-	Node<T>* UnderNode(Node<T>* node)
+	T& Under(T& key)
 	{
+		Node<T>* node = Find(key);
 		if (node->right != nullptr)
 		{
-			return Min(node->right);
+			return Min(node->right)->key;
 		}
 		Node<T>* tmp = node->parent;
 		while (tmp != nullptr && node == tmp->right)
@@ -233,13 +274,14 @@ public:
 			node = tmp;
 			tmp = tmp->parent;
 		}
-		return tmp;
+		return tmp->key;
 	}
-	Node<T>* OverNode(Node<T>* node)
+	T& Over(T& key)
 	{
+		Node<T>* node = Find(key);
 		if (node->left != nullptr)
 		{
-			return Max(node->left);
+			return Max(node->left)->key;
 		}
 		Node<T>* tmp = node->parent;
 		while (tmp != nullptr && node == tmp->left)
@@ -247,27 +289,16 @@ public:
 			node = tmp;
 			tmp = tmp->parent;
 		}
-		return tmp;
+		return tmp->key;
 	}
-	Node<T>& getNode(const T key) {
-		Node<T>* current = root_;
-		while (current != nullptr) {
-			if (key == current->key)
-				return &current;
-			else if (key < current->key)
-				current = current->left;
-			else if (key > current->key)
-				current = current->right;
-		}
-	}
+	
 
-	void OrderedContent(Node<T>* root, T mass[], int& i)//std::vector<T>& mass)
+	void OrderedContent(Node<T>* root, std::vector<T>& mass)
 	{
 		if (root != nullptr) {
-			OrderedContent(root->left, mass, i);
-			mass[i] = root->key;
-			i++;
-			OrderedContent(root->right, mass, i);
+			OrderedContent(root->left, mass);
+			mass.push_back(root->key);
+			OrderedContent(root->right, mass);
 		}
 	}
 
@@ -279,7 +310,7 @@ public:
 		}
 	}
 	void Print() { OrderedPrint(root_); }
-	void Content(T mass[], int& i) { OrderedContent(root_, mass, i); }
+	void Content(std::vector<T>& mass) { OrderedContent(root_, mass); }
 	~AVLTree() { deleteTree(root_); }
 };
 #endif

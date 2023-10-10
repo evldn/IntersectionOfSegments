@@ -5,78 +5,73 @@
 const int n = 2;
 
 double Area(Point a, Point b, Point c) {
-	return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+	double s = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+	return abs(s) < EPS ? 0 : s > 0 ? +1 : -1;
+	//return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
 }
 
 bool IntersectProjection(double b1, double e1, double b2, double e2)
 {
 	if (b1 > e1)  std::swap(b1, e1);
 	if (b2 > e2)  std::swap(b2, e2);
-	return std::max(b1, b2) <= std::min(e1, e2);
+	return std::max(b1, b2) <= std::min(e1, e2) + EPS;
 }
 
 bool Intersect(const Segment& a, const Segment& b) {
+	if ((&a == nullptr) || (&b == nullptr))
+		return false;
 	return IntersectProjection(a.begin.x, a.end.x, b.begin.x, b.end.x)
 		&& IntersectProjection(a.begin.y, a.end.y, b.begin.y, b.end.y)
-		&& Area(a.begin, a.end, b.begin) * Area(a.begin, a.end, b.end) <= 0
-		&& Area(b.begin, b.end, a.begin) * Area(b.begin, b.end, a.end) <= 0;
+		&& ((Area(a.begin, a.end, b.begin) * Area(a.begin, a.end, b.end)) <= 0)
+		&& ((Area(b.begin, b.end, a.begin) * Area(b.begin, b.end, a.end)) <= 0);
 }
 
-bool IntersectionEffective(Segment S[])
+bool IntersectionEffective(std::vector<Segment> S)
 {
 	AVLTree<Segment> L;
-	Point p;
-	AVLTree<Point> begins_ends;
+	std::vector<Point> point;
 	for (int i = 0; i < n; ++i)
 	{
-		begins_ends.Insert(S[i].begin);
-		begins_ends.Insert(S[i].end);
+		point.push_back(S[i].begin);
+		point.push_back(S[i].end);
 	}
-	Point point[2 * n];
-	int j = 0;
-	begins_ends.Content(point, j); // лексикографическая сортировка 2n концов отрезков
-	Node<Segment>* s;
-	Node<Segment>* s1;
-	Node<Segment>* s2;
+	std::sort(point.begin(), point.end()); // лексикографическая сортировка 2n концов отрезков
 	for (int i = 0; i < 2 * n; ++i)
 	{
-		p = point[i];
-		s = new Node<Segment>(*p.segment);
-		if (p.left == true)
+		Point p = point[i];
+		Segment s = S[p.id];
+		s.intersection_point = p;
+		if (point[i].type == -1)
 		{
-			L.InsertNode(s);
-			s1 = L.OverNode(s);
-			s2 = L.UnderNode(s);
-			if ((Intersect(s1->key, s->key)) || (Intersect(s2->key, s->key)))
+			L.Insert(s);
+			Segment s1 = L.Over(s);
+			Segment s2 = L.Under(s);
+			if (Intersect(s1, s) || Intersect(s2, s))
 			{
 				return true;
 			}
 		}
 		else
 		{
-			L.InsertNode(s);
-			s1 = L.OverNode(s);
-			s2 = L.UnderNode(s);
-			if (Intersect(s1->key, s2->key))
+			Segment s1 = L.Over(s);
+			Segment s2 = L.Under(s);
+			if (Intersect(s1, s2))
 			{
 				return true;
 			}
-
+			L.Remove(s);
 		}
 	}
-	return true;
+	return false;
 }
 
 
 
 int main()
 {
-	Point p1(4, 5), p2(2, 4), p3(2, 7), p4(3, 5);
-	Segment segments[2];
-	segments[0].begin = p1;
-	segments[0].end = p2;
-	segments[1].begin = p3;
-	segments[1].end = p4;
-	IntersectionEffective(segments);
+	std::vector<Segment> segments;
+	segments.push_back(Segment(-2, 1, 1, 2, 0));
+	segments.push_back(Segment(1, 2.5, 1.5, 2.5, 1));
+	std::cout << IntersectionEffective(segments);
 	return 0;
 }
