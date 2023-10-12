@@ -20,10 +20,8 @@ struct Node
 template <class T>
 class AVLTree
 {
-	int GetBalance(Node<T>* current)
-	{
-		return Height(current->right) - Height(current->left);
-	}
+	//-------------------------[SERVICE METHODS]-------------------------
+	int GetBalance(Node<T>* current) { return Height(current->right) - Height(current->left); }
 	int Height(Node<T>* current) { return current ? current->height : 0; }
 	void FixHeight(Node<T>* current)
 	{
@@ -45,29 +43,6 @@ class AVLTree
 				PartInsertRecursive(current->right, key);
 			else
 				current->right = new Node<T>(key, current);
-			current->right = BalanceNode(current->right);
-		}
-	}
-	void PartInsertNodeRecursive(Node<T>* current, Node<T>* keyNode)
-	{
-		if (keyNode->key < current->key) {
-			if (current->left)
-				PartInsertNodeRecursive(current->left, keyNode);
-			else
-			{
-				current->left = keyNode;
-				keyNode->parent = current;
-			}
-			current->left = BalanceNode(current->left);
-		}
-		else {
-			if (current->right)
-				PartInsertNodeRecursive(current->right, keyNode);
-			else
-			{
-				current->right = keyNode;
-				keyNode->parent = current;
-			}
 			current->right = BalanceNode(current->right);
 		}
 	}
@@ -99,10 +74,23 @@ class AVLTree
 		}
 		return nullptr;
 	}
+	void deleteTree(Node<T>* root)
+	{
+		if (root != nullptr) {
+			deleteTree(root->left);
+			deleteTree(root->right);
+			delete root;
+		}
+	}
+	//-------------------------[FIELDS]-------------------------
 	Node<T>* root_;
+	Segment nothing_1;
+	Segment nothing_2;
 public:
-	AVLTree(Node<T>* root = nullptr) : root_(root) {};
-
+	//-------------------------[CONSTRUCTORS AND DESTRUCTOR]-------------------------
+	AVLTree(Node<T>* root = nullptr) : root_(root), nothing_1(-22, -16, -20, -15, -1), nothing_2(-18, -16, -16, -16, -2) {};
+	~AVLTree() { deleteTree(root_); }
+	//-------------------------[BALANCING]-------------------------
 	Node<T>* RotationRight(Node<T>* current, Node<T>* parent)
 	{
 		Node<T>* left = current->left;
@@ -129,13 +117,19 @@ public:
 		left->parent = parent;
 		int th = 0;
 		if (B != nullptr)
+		{
 			th = B->height;
+		}
 		if (C != nullptr)
+		{
 			th = std::max(th, C->height);
+		}
 		th++;
 		current->height = th;
 		if (A != nullptr)
+		{
 			th = std::max(th, A->height);
+		}
 		th++;
 		left->height = th;
 		return left;
@@ -166,13 +160,19 @@ public:
 		right->parent = parent;
 		int th = 0;
 		if (B != nullptr)
+		{
 			th = B->height;
+		}
 		if (C != nullptr)
+		{
 			th = std::max(th, C->height);
+		}
 		th++;
 		current->height = th;
 		if (A != nullptr)
+		{
 			th = std::max(th, A->height);
+		}
 		th++;
 		right->height = th;
 		return right;
@@ -194,9 +194,49 @@ public:
 		return current;
 	}
 
+	//-------------------------[SEARCHES]-------------------------
 	Node<T>* Maximum() { return Max(root_); }
 	Node<T>* Minimum() { return Min(root_); }
+	T& Under(T& key)
+	{
+		Node<T>* node = Find(key);
+		if (node->right != nullptr)
+		{
+			return Min(node->right)->key;
+		}
+		Node<T>* tmp = node->parent;
+		while (tmp != nullptr && node == tmp->right)
+		{
+			node = tmp;
+			tmp = tmp->parent;
+		}
+		if (tmp != nullptr)
+		{
+			return tmp->key;
+		}
+		return nothing_1;
+	}
+	T& Over(T& key)
+	{
+		Node<T>* node = Find(key);
+		if (node->left != nullptr)
+		{
+			return Max(node->left)->key;
+		}
+		Node<T>* tmp = node->parent;
+		while (tmp != nullptr && node == tmp->left)
+		{
+			node = tmp;
+			tmp = tmp->parent;
+		}
+		if (tmp != nullptr)
+		{
+			return tmp->key;
+		}
+		return nothing_2;
+	}
 
+	//-------------------------[CHANGES]-------------------------
 	void Insert(T& key)
 	{
 		if (root_ == nullptr) {
@@ -206,16 +246,6 @@ public:
 		PartInsertRecursive(root_, key);
 		root_ = BalanceNode(root_);
 	}
-	void InsertNode(Node<T>* keyNode)
-	{
-		if (root_ == nullptr) {
-			root_ = keyNode;
-			return;
-		}
-		PartInsertNodeRecursive(root_, keyNode);
-		root_ = BalanceNode(root_);
-	}
-
 	void RemoveMin(Node<T>* node)
 	{
 		if (node->left == 0)
@@ -223,7 +253,6 @@ public:
 		RemoveMin(node->left);
 		BalanceNode(node);
 	}
-
 	void RemoveNode(Node<T>* node, Node<T>* keyNode)
 	{
 		if (!node) return;
@@ -245,63 +274,13 @@ public:
 		}
 		BalanceNode(node);
 	}
-
 	void Remove(T& key)
 	{
 		Node<T>* node = Find(key);
 		RemoveNode(root_, node);
 	}
 
-	void deleteTree(Node<T>* root)
-	{
-		if (root != nullptr) {
-			deleteTree(root->left);
-			deleteTree(root->right);
-			delete root;
-		}
-	}
-
-	T& Under(T& key)
-	{
-		Node<T>* node = Find(key);
-		if (node->right != nullptr)
-		{
-			return Min(node->right)->key;
-		}
-		Node<T>* tmp = node->parent;
-		while (tmp != nullptr && node == tmp->right)
-		{
-			node = tmp;
-			tmp = tmp->parent;
-		}
-		return tmp->key;
-	}
-	T& Over(T& key)
-	{
-		Node<T>* node = Find(key);
-		if (node->left != nullptr)
-		{
-			return Max(node->left)->key;
-		}
-		Node<T>* tmp = node->parent;
-		while (tmp != nullptr && node == tmp->left)
-		{
-			node = tmp;
-			tmp = tmp->parent;
-		}
-		return tmp->key;
-	}
-	
-
-	void OrderedContent(Node<T>* root, std::vector<T>& mass)
-	{
-		if (root != nullptr) {
-			OrderedContent(root->left, mass);
-			mass.push_back(root->key);
-			OrderedContent(root->right, mass);
-		}
-	}
-
+	//-------------------------[OUTPUT]-------------------------
 	void OrderedPrint(Node<T>* root) {
 		if (root != nullptr) {
 			OrderedPrint(root->left);
@@ -310,7 +289,5 @@ public:
 		}
 	}
 	void Print() { OrderedPrint(root_); }
-	void Content(std::vector<T>& mass) { OrderedContent(root_, mass); }
-	~AVLTree() { deleteTree(root_); }
 };
 #endif
