@@ -55,9 +55,13 @@ class AVLTree
 	{
 		if (!node) return nullptr;
 		if (key < node->key)
+		{
 			node->left = RemoveNode(node->left, key);
+		}
 		else if (key > node->key)
+		{
 			node->right = RemoveNode(node->right, key);
+		}
 		else
 		{
 			Node<T>* left = node->left;
@@ -103,7 +107,8 @@ class AVLTree
 	}
 	void DeleteTree(Node<T>* root)
 	{
-		if (root != nullptr) {
+		if (root != nullptr) 
+		{
 			DeleteTree(root->left);
 			DeleteTree(root->right);
 			delete root;
@@ -200,14 +205,20 @@ class AVLTree
 	{
 		FixHeight(current);
 		int b = GetBalance(current);
-		if (b == 2) {
+		if (b == 2) 
+		{
 			if (GetBalance(current->right) < 0)
+			{
 				current->right = RotationRight(current->right, current);
+			}
 			return RotationLeft(current, current->parent);
 		}
-		else if (b == -2) {
+		else if (b == -2) 
+		{
 			if (GetBalance(current->left) > 0)
+			{
 				current->left = RotationLeft(current->left, current);
+			}
 			return RotationRight(current, current->parent);
 		}
 		return current;
@@ -269,13 +280,18 @@ public:
 		root_ = RemoveNode(root_, key);
 	}
 	//-------------------------[OUTPUT]-------------------------
-	void OrderedPrint(Node<T>* root) {
-		if (root != nullptr) {
+	void OrderedPrint(Node<T>* root) 
+	{
+		if (root != nullptr) 
+		{
 			OrderedPrint(root->left);
 			std::cout << root->key << " ";
 			OrderedPrint(root->right);
 		}
 	}
-	void Print() { OrderedPrint(root_); }
+	void Print() 
+	{ 
+		OrderedPrint(root_); 
+	}
 };
 #endif

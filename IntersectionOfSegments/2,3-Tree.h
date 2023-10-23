@@ -25,7 +25,8 @@ struct Node
 	int GetChildIndex()
 	{
 		int child_index = 0;
-		for (; child_index <= parent->size; ++child_index) {
+		for (; child_index <= parent->size; ++child_index) 
+		{
 
 			if (this == parent->children[child_index])
 				break;
@@ -36,7 +37,8 @@ struct Node
 	{ 
 		return children[size]; 
 	}
-	void Swap(T& x, T& y) {
+	void Swap(T& x, T& y) 
+	{
 		T r = x;
 		x = y;
 		y = r;
@@ -114,7 +116,8 @@ struct Node
 		return (size == 2);
 	}
 	//-------------------------[OUTPUT]-------------------------
-	void Traverse() {
+	void Traverse() 
+	{
 		int i;
 		for (i = 0; i < size; ++i) {
 			if (!IsLeaf()) {
@@ -144,25 +147,29 @@ class TwoThreeTree
 		if (y->children[0])  y->children[0]->parent = y;
 		if (y->children[1]) y->children[1]->parent = y;
 
-		if (current->parent) {
+		if (current->parent) 
+		{
 			current->parent->InsertToNode(current->keys[1]);
 
 			if (current->parent->children[0] == current) current->parent->children[0] = nullptr;
 			else if (current->parent->children[1] == current) current->parent->children[1] = nullptr;
 			else if (current->parent->children[2] == current) current->parent->children[2] = nullptr;
 
-			if (current->parent->children[0] == nullptr) {
+			if (current->parent->children[0] == nullptr) 
+			{
 				current->parent->children[3] = current->parent->children[2];
 				current->parent->children[2] = current->parent->children[1];
 				current->parent->children[1] = y;
 				current->parent->children[0] = x;
 			}
-			else if (current->parent->children[1] == nullptr) {
+			else if (current->parent->children[1] == nullptr) 
+			{
 				current->parent->children[3] = current->parent->children[2];
 				current->parent->children[2] = y;
 				current->parent->children[1] = x;
 			}
-			else {
+			else 
+			{
 				current->parent->children[3] = y;
 				current->parent->children[2] = x;
 			}
@@ -171,7 +178,8 @@ class TwoThreeTree
 			delete current;
 			return tmp;
 		}
-		else {
+		else 
+		{
 			x->parent = current;
 			y->parent = current;
 			current->BecomeNode2(current->keys[1], x, y);
@@ -229,8 +237,10 @@ class TwoThreeTree
 		Node<T>* second = parent->children[1];
 		Node<T>* third = parent->children[2];
 
-		if ((parent->size == 2) && (first->size < 2) && (second->size < 2) && (third->size < 2)) {
-			if (first == leaf) {
+		if ((parent->size == 2) && (first->size < 2) && (second->size < 2) && (third->size < 2)) 
+		{
+			if (first == leaf) 
+			{
 				parent->children[0] = parent->children[1];
 				parent->children[1] = parent->children[2];
 				parent->children[2] = nullptr;
@@ -246,7 +256,8 @@ class TwoThreeTree
 				parent->RemoveFromNode(parent->keys[0]);
 				delete first;
 			}
-			else if (second == leaf) {
+			else if (second == leaf) 
+			{
 				first->InsertToNode(parent->keys[0]);
 				parent->RemoveFromNode(parent->keys[0]);
 				if (leaf->children[0] != nullptr) first->children[2] = leaf->children[0];
@@ -259,7 +270,8 @@ class TwoThreeTree
 
 				delete second;
 			}
-			else if (second == leaf) {
+			else if (second == leaf) 
+			{
 				second->InsertToNode(parent->keys[1]);
 				parent->children[2] = nullptr;
 				parent->RemoveFromNode(parent->keys[1]);
@@ -271,27 +283,30 @@ class TwoThreeTree
 				delete third;
 			}
 		}
-		else if ((parent->size == 2) && ((first->size == 2) || (second->size == 2) || (third->size == 2))) {
-			if (third == leaf) {
-				if (leaf->children[0] != nullptr) {
+		else if ((parent->size == 2) && ((first->size == 2) || (second->size == 2) || (third->size == 2))) 
+		{
+			if (third == leaf) 
+			{
+				if (leaf->children[0] != nullptr) 
+				{
 					leaf->children[1] = leaf->children[0];
 					leaf->children[0] = nullptr;
 				}
-
 				leaf->InsertToNode(parent->keys[1]);
-				if (second->size == 2) {
+				if (second->size == 2) 
+				{
 					parent->keys[1] = second->keys[1];
 					second->RemoveFromNode(second->keys[1]);
 					leaf->children[0] = second->children[2];
 					second->children[2] = nullptr;
 					if (leaf->children[0] != nullptr) leaf->children[0]->parent = leaf;
 				}
-				else if (first->size == 2) {
+				else if (first->size == 2) 
+				{
 					parent->keys[1] = second->keys[0];
 					leaf->children[0] = second->children[1];
 					second->children[1] = second->children[0];
 					if (leaf->children[0] != nullptr) leaf->children[0]->parent = leaf;
-
 					second->keys[0] = parent->keys[0];
 					parent->keys[0] = first->keys[1];
 					first->RemoveFromNode(first->keys[1]);
@@ -300,9 +315,12 @@ class TwoThreeTree
 					first->children[2] = nullptr;
 				}
 			}
-			else if (second == leaf) {
-				if (third->size == 2) {
-					if (leaf->children[0] == nullptr) {
+			else if (second == leaf) 
+			{
+				if (third->size == 2) 
+				{
+					if (leaf->children[0] == nullptr) 
+					{
 						leaf->children[0] = leaf->children[1];
 						leaf->children[1] = nullptr;
 					}
@@ -315,8 +333,10 @@ class TwoThreeTree
 					third->children[1] = third->children[2];
 					third->children[2] = nullptr;
 				}
-				else if (first->size == 2) {
-					if (leaf->children[1] == nullptr) {
+				else if (first->size == 2) 
+				{
+					if (leaf->children[1] == nullptr) 
+					{
 						leaf->children[1] = leaf->children[0];
 						leaf->children[0] = nullptr;
 					}
@@ -328,13 +348,16 @@ class TwoThreeTree
 					first->children[2] = nullptr;
 				}
 			}
-			else if (first == leaf) {
-				if (leaf->children[0] == nullptr) {
+			else if (first == leaf)
+			{
+				if (leaf->children[0] == nullptr) 
+				{
 					leaf->children[0] = leaf->children[1];
 					leaf->children[1] = nullptr;
 				}
 				first->InsertToNode(parent->keys[0]);
-				if (second->size == 2) {
+				if (second->size == 2) 
+				{
 					parent->keys[0] = second->keys[0];
 					second->RemoveFromNode(second->keys[0]);
 					first->children[1] = second->children[0];
@@ -343,7 +366,8 @@ class TwoThreeTree
 					second->children[1] = second->children[2];
 					second->children[2] = nullptr;
 				}
-				else if (third->size == 2) {
+				else if (third->size == 2) 
+				{
 					parent->keys[0] = second->keys[0];
 					second->keys[0] = parent->keys[1];
 					parent->keys[1] = third->keys[0];
@@ -359,10 +383,12 @@ class TwoThreeTree
 				}
 			}
 		}
-		else if (parent->size == 1) {
+		else if (parent->size == 1) 
+		{
 			leaf->InsertToNode(parent->keys[0]);
 
-			if (first == leaf && second->size == 2) {
+			if (first == leaf && second->size == 2) 
+			{
 				parent->keys[0] = second->keys[0];
 				second->RemoveFromNode(second->keys[0]);
 
@@ -374,7 +400,8 @@ class TwoThreeTree
 				second->children[2] = nullptr;
 				if (leaf->children[1] != nullptr) leaf->children[1]->parent = leaf;
 			}
-			else if (second == leaf && first->size == 2) {
+			else if (second == leaf && first->size == 2) 
+			{
 				parent->keys[0] = first->keys[1];
 				first->RemoveFromNode(first->keys[1]);
 
@@ -422,7 +449,8 @@ class TwoThreeTree
 		Node<T>* min = nullptr;
 		if (current->keys[0] == key) min = SearchMin(current->children[1]);
 		else min = SearchMin(current->children[2]);
-		if (min) {
+		if (min) 
+		{
 			T& z = (key == current->keys[0] ? current->keys[0] : current->keys[1]);
 			current->Swap(z, min->keys[0]);
 			current = min;
@@ -465,7 +493,8 @@ class TwoThreeTree
 	}
 	void DeleteTree(Node<T>* root)
 	{
-		if (root != nullptr) {
+		if (root != nullptr) 
+		{
 			DeleteTree(root->children[0]);
 			DeleteTree(root->children[1]);
 			DeleteTree(root->children[2]);
