@@ -10,7 +10,7 @@ namespace AVL
 {
 	bool IntersectionEffective(std::vector<Segment>& S);
 }
-namespace TwoThird
+namespace TwoThree
 {
 	bool IntersectionEffective(std::vector<Segment>& S);
 }

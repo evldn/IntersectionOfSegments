@@ -240,7 +240,7 @@ public:
 	AVLTree(Node<T>* root = nullptr) : root_(root), nothing_1(-22, -16, -20, -15, -1), nothing_2(-18, -16, -16, -16, -2) {};
 	~AVLTree() { DeleteTree(root_); }
 	//-------------------------[SEARCHES]-------------------------
-	T Over(T key) //следующий
+	T Over(T key)
 	{
 		Node<T>* node = Search(root_, key);
 		if (node->right != nullptr)
@@ -259,7 +259,7 @@ public:
 		}
 		return nothing_1;
 	}
-	T Under(T key) //предшествующий
+	T Under(T key)
 	{
 		Node<T>* node = Search(root_, key);
 		if (node->left != nullptr)

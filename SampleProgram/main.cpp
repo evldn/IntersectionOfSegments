@@ -21,6 +21,6 @@ int main()
 		++i;
 	}
 	std::cout << AVL::IntersectionEffective(segments) << std::endl;
-	std::cout << TwoThird::IntersectionEffective(segments) << std::endl;
+	std::cout << TwoThree::IntersectionEffective(segments) << std::endl;
 	return 0;
 }

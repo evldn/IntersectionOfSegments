@@ -58,7 +58,7 @@ namespace AVL
 		return false;
 	}
 }
-namespace TwoThird
+namespace TwoThree
 {
 	bool IntersectionEffective(std::vector<Segment>& S)
 	{

@@ -23,7 +23,7 @@ int main()
 		auto duration_1 = std::chrono::duration_cast<std::chrono::microseconds>(end_time_1 - start_time_1);
 		time_1 = duration_1.count();
 		auto start_time_2 = std::chrono::steady_clock::now();
-		TwoThird::IntersectionEffective(segments);
+		TwoThree::IntersectionEffective(segments);
 		auto end_time_2 = std::chrono::steady_clock::now();
 		auto duration_2 = std::chrono::duration_cast<std::chrono::microseconds>(end_time_2 - start_time_2);
 		time_2 = duration_2.count();
