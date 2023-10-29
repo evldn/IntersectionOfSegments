@@ -12,7 +12,7 @@ Point::Point(const Point& point)
 
 bool Point::operator< (const Point& point)
 {
-	if ((this->x < point.x) || ((this->x == point.x) && (this->y < point.y)))
+	if ((x < point.x) || ((x == point.x) && (y < point.y)))
 	{
 		return true;
 	}
@@ -20,7 +20,7 @@ bool Point::operator< (const Point& point)
 }
 bool Point::operator> (const Point& point)
 {
-	if ((this->x < point.x) || ((this->x == point.x) && (this->y < point.y)))
+	if ((x > point.x) || ((x == point.x) && (y > point.y)))
 	{
 		return true;
 	}
@@ -102,20 +102,20 @@ bool Segment::operator!=(const Segment& segment)
 bool Segment::operator< (const Segment& b)
 {
 	double x = std::max(std::min(begin.x, end.x), std::min(b.begin.x, b.end.x));
-	return GetY(x) < b.GetY(x) - EPS;
+	return GetY(x) < b.GetY(x);
 }
 bool Segment::operator>(const Segment& b)
 {
 	double x = std::max(std::min(begin.x, end.x), std::min(b.begin.x, b.end.x));
-	return GetY(x) > b.GetY(x) - EPS;
+	return GetY(x) > b.GetY(x);
 }
 bool Segment::operator<=(const Segment& b)
 {
 	double x = std::max(std::min(begin.x, end.x), std::min(b.begin.x, b.end.x));
-	return GetY(x) <= b.GetY(x) - EPS;
+	return GetY(x) <= b.GetY(x);
 }
 bool Segment::operator>=(const Segment& b)
 {
 	double x = std::max(std::min(begin.x, end.x), std::min(b.begin.x, b.end.x));
-	return GetY(x) >= b.GetY(x) - EPS;
+	return GetY(x) >= b.GetY(x);
 }

@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include "Segments.h"
+#include <stack>
 
 template <class T>
 struct Node
@@ -95,15 +96,22 @@ class AVLTree
 	}
 	Node<T>* Search(Node<T>* node, T key)
 	{
-		if (node == nullptr || key == node->key)
+		while (node != nullptr) 
 		{
-			return node;
+			if (key == node->key)
+			{
+				return node;
+			}
+			if (key > node->key)
+			{
+				node = node->right;
+			}
+			else
+			{
+				node = node->left;
+			}
 		}
-		if (key < node->key)
-		{
-			return Search(node->left, key);
-		}
-		else return Search(node->right, key);
+		return nullptr;
 	}
 	void DeleteTree(Node<T>* root)
 	{

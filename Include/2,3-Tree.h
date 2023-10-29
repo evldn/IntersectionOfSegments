@@ -270,7 +270,7 @@ class TwoThreeTree
 
 				delete second;
 			}
-			else if (second == leaf) 
+			else if (third == leaf) 
 			{
 				second->InsertToNode(parent->keys[1]);
 				parent->children[2] = nullptr;
