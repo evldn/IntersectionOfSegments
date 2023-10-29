@@ -6,7 +6,7 @@ include(cmake/function.cmake)
 
 add_subdirectory(Segments)
 add_subdirectory(AVL-Tree)
-add_subdirectory(23-Tree)
+add_subdirectory(TwoThree-Tree)
 add_subdirectory(Intersection)
 add_subdirectory(SegmentGenerator)
 add_subdirectory(SampleProgram)
